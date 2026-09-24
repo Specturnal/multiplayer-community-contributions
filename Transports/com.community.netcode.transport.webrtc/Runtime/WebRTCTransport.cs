@@ -236,7 +236,7 @@ namespace Netcode.Transports.WebRTC
             {
                 string reason = payload.GetProperty("reason").GetString();
                 Debug.LogError($"[WebRTCTransport] Room creation failed: {reason}");
-                Shutdown();
+                eventQueue.Enqueue((NetworkEvent.TransportFailure, 0, default));
             });
 
             signalClient.On("new-client", async payload =>
@@ -383,7 +383,7 @@ namespace Netcode.Transports.WebRTC
             {
                 string missingRoomId = payload.GetProperty("roomId").GetString();
                 Debug.LogError($"[WebRTCTransport] Room not found: {missingRoomId}");
-                Shutdown();
+                eventQueue.Enqueue((NetworkEvent.Disconnect, 0, default));
             });
 
             signalClient.On("offer", async payload =>
